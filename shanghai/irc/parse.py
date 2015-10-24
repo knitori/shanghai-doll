@@ -38,6 +38,8 @@ def unpack_line(line):
 
 
 def pack_prefix(prefix):
+    if not isinstance(prefix, Prefix):
+        prefix = Prefix(*prefix)
     prefix_str = prefix.nick
     if prefix.ident is not None:
         prefix_str += '!' + prefix.ident
@@ -47,6 +49,8 @@ def pack_prefix(prefix):
 
 
 def pack_message(msg):
+    if not isinstance(msg, Line):
+        msg = Line(*msg)
     if msg.prefix is None:
         parts = [msg.command.upper()]
     else:
