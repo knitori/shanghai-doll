@@ -67,4 +67,31 @@ def make_line(*args):
 
 
 def is_channel(chan):
-    return chan.startswith('#')
+    # any octet except NUL, BELL, CR, LF, " ", "," and ":"
+    # starting with any of: #+&!
+    if all(c not in '\0\a\r\n ,:' for c in chan):
+        if chan.startswith(('#', '+', '&', '!')):
+            return True
+    return False
+
+
+def rfc_lower(s):
+    """https://tools.ietf.org/html/rfc2812#section-2.2
+    {}|^ --> []\\~"""
+    s = s.lower()
+    s = s.replace('{', '[')
+    s = s.replace('}', ']')
+    s = s.replace('|', '\\')
+    s = s.replace('^', '~')
+    return s
+
+
+def rfc_upper(s):
+    """https://tools.ietf.org/html/rfc2812#section-2.2
+    []\\~ --> {}|^"""
+    s = s.lower()
+    s = s.replace('[', '{')
+    s = s.replace(']', '}')
+    s = s.replace('\\', '|')
+    s = s.replace('~', '^')
+    return s
