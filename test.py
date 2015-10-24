@@ -3,6 +3,7 @@ import asyncio
 
 from shanghai.irc.messages import Message, Privmsg, CtcpRequest
 from shanghai.irc.protocol import IRCProtocol
+from shanghai.irc.parse import is_channel
 
 
 class IRCHandler:
@@ -23,6 +24,10 @@ class IRCHandler:
             if msg.message == '+test':
                 prot.sendline('PRIVMSG {} :\x01VERSION\x01'
                               .format(msg.sender))
+            elif msg.message == '+cycle':
+                if is_channel(msg.target):
+                    prot.sendline('PART {}'.format(msg.target))
+                    prot.sendline('JOIN {}'.format(msg.target))
         if isinstance(msg, CtcpRequest):
             if msg.ctcp_command == 'VERSION':
                 prot.sendline('NOTICE {} :\x01VERSION {}\x01'
