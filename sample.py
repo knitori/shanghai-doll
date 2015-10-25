@@ -20,11 +20,20 @@ class IRCHandler:
         self.network = Network('Shanghai|Doll')
 
     async def on_connected(self, prot):
+        print('\033[32;1mConnected to {}:{}\033[0m'
+              .format(prot.host, prot.port))
         prot.sendline('NICK {}'.format(self.network.mynick))
         prot.sendline('USER doll * * :Shanghai Doll')
 
     async def on_disconnect(self, prot):
-        print('Disconnected from {}'.format(prot))
+        print('\033[31;1mDisconnected from {}:{}\033[0m'
+              .format(prot.host, prot.port))
+        loop = asyncio.get_event_loop()
+        loop.call_later(30, self.reconnect, prot.host, prot.port)
+
+    def reconnect(self, host, port):
+        self.__init__()
+        asyncio.ensure_future(IRCProtocol(host, port, self).run())
 
     async def on_message(self, prot: IRCProtocol, msg: Message):
         self.network.feed_message(msg)
@@ -37,11 +46,12 @@ class IRCHandler:
                 '15 seconds to say something! o/')
         if isinstance(msg, Privmsg):
             if msg.message == '+test':
-                prot.sendline('PRIVMSG {} :\x01VERSION\x01'
+                prot.sendline('QUIT :quitting you bastard!'
                               .format(msg.sender))
             elif msg.message == '+cycle':
                 if is_channel(msg.target):
-                    prot.sendline('PART {}'.format(msg.target))
+                    prot.sendline('PART {} :Cycling! Because I can!'
+                                  .format(msg.target))
                     prot.sendline('JOIN {}'.format(msg.target))
         if isinstance(msg, CtcpRequest):
             if msg.ctcp_command == 'VERSION':
