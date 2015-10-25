@@ -5,6 +5,7 @@ import logging
 from shanghai.irc.messages import Message, Privmsg, CtcpRequest
 from shanghai.irc.protocol import IRCProtocol
 from shanghai.irc.parse import is_channel
+from shanghai.irc.state import Network
 
 logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] %(message)s",
@@ -15,15 +16,19 @@ logger = logging.getLogger(__name__)
 
 class IRCHandler:
 
+    def __init__(self):
+        self.network = Network('Shanghai|Doll')
+
     async def on_connected(self, prot):
-        prot.sendline('NICK Shanghai|Doll')
+        prot.sendline('NICK {}'.format(self.network.mynick))
         prot.sendline('USER doll * * :Shanghai Doll')
 
     async def on_disconnect(self, prot):
         print('Disconnected from {}'.format(prot))
 
     async def on_message(self, prot: IRCProtocol, msg: Message):
-        print(msg)
+        self.network.feed_message(msg)
+
         if msg.isnumeric('001'):
             prot.sendline('JOIN #botted')
             prot.loop.call_later(

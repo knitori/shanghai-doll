@@ -39,5 +39,5 @@ class IRCProtocol:
         self.sendline(pack_message(msg))
 
     def sendline(self, line):
-        print('>>> {}'.format(line))
+        print('\033[32;1m<<< {}\033[0;0m'.format(line))
         self.writer.write('{}\r\n'.format(line).encode('utf-8'))

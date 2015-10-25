@@ -136,3 +136,6 @@ class Network:
         for join in self.joins:
             if join.user == user:
                 yield join.channel
+
+    def feed_message(self, msg):
+        print('\033[36;1m>>>\033[0;0m {}'.format(msg))
