@@ -71,7 +71,8 @@ def is_channel(chan):
     # starting with any of: #+&!
     if all(c not in '\0\a\r\n ,:' for c in chan):
         if chan.startswith(('#', '+', '&', '!')):
-            return True
+            if len(chan) > 1:
+                return True
     return False
 
 
@@ -89,7 +90,7 @@ def rfc_lower(s):
 def rfc_upper(s):
     """https://tools.ietf.org/html/rfc2812#section-2.2
     []\\~ --> {}|^"""
-    s = s.lower()
+    s = s.upper()
     s = s.replace('[', '{')
     s = s.replace(']', '}')
     s = s.replace('\\', '|')
