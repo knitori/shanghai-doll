@@ -45,6 +45,17 @@ class User:
         return 'User({!r})'.format(self.nick)
 
 
+class Join:
+
+    def __init__(self, channel: Channel, user: User):
+        self.channel = channel
+        self.user = user
+        self.modes = []
+
+    def __hash__(self):
+        return hash((self.channel, self.user))
+
+
 class Network:
 
     def __init__(self, mynick):
@@ -94,27 +105,29 @@ class Network:
     def join(self, channel: Channel, user: User):
         """Join channel and user object.
         This means, that the user <user> is on channel <channel>."""
-        self.joins.add((channel, user))
+        self.joins.add(Join(channel, user))
 
     def detach(self, channel: Channel, user: User):
         """Detach channel and user object from each other.
         This means, the user <user> left the channel <channel>."""
-        tmp = (channel, user)
-        if tmp in self.joins:
-            self.joins.remove(tmp)
+        to_remove = set()
+        for join in self.joins:
+            if join.channel == channel and join.user == user:
+                to_remove.add(join)
+        self.joins -= to_remove
 
     def joined_users(self, name_or_chan):
         chan = self.find_channel(name_or_chan)
         if chan is None:
             return
-        for joined_chan, joined_user in self.joins:
-            if joined_chan == chan:
-                yield joined_user
+        for join in self.joins:
+            if join.channel == chan:
+                yield join.user
 
     def joined_channels(self, nick_or_user):
         user = self.find_user(nick_or_user)
         if user is None:
             return
-        for joined_chan, joined_user in self.joins:
-            if joined_user == user:
-                yield joined_chan
+        for join in self.joins:
+            if join.user == user:
+                yield join.channel

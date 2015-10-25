@@ -63,3 +63,8 @@ class TestIrcParse(TestCase):
         self.assertEqual({user1, user2, user3}, set(user_in_channel1))
         self.assertEqual({user1, user3}, set(user_in_channel2))
         self.assertEqual({user2}, set(user_in_channel3))
+
+        # test parting of users
+        net.detach(chan1, user2)
+        user_in_channel1 = list(net.joined_users('#channel1'))
+        self.assertEqual({user1, user3}, set(user_in_channel1))
