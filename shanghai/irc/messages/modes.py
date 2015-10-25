@@ -15,10 +15,9 @@ class Mode(Message, metaclass=register_derivative):
     """
 
     def process(self):
-        target = self.params[0]
-        if parse.is_channel(target):
-            # assume channel mode
-            pass
-        else:
-            # assume user mode
-            pass
+        self.target = self.params[0]
+        self.modes = list(parse.parse_modes(self.params[1]))
+        self.args = self.params[2:]
+
+    def __repr__(self):
+        return 'Mode'

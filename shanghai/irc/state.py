@@ -138,4 +138,6 @@ class Network:
                 yield join.channel
 
     def feed_message(self, msg):
+        """Get a message and change the state of the network
+        according to what is received."""
         print('\033[36;1m>>>\033[0;0m {}'.format(msg))

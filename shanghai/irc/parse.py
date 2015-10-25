@@ -98,3 +98,14 @@ def rfc_upper(s):
     s = s.replace('\\', '|')
     s = s.replace('~', '^')
     return s
+
+
+def parse_modes(modes):
+    add = True
+    for char in modes:
+        if char == '+':
+            add = True
+        elif char == '-':
+            add = False
+        else:
+            yield (char, add)
