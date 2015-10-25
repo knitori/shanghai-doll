@@ -29,6 +29,7 @@ class IRCProtocol:
             line = line.strip().decode('utf-8', 'replace')
             if line:
                 msg = Message.from_line(line)
+                print('\033[36;1m>>>\033[0;0m {}'.format(msg))
                 if isinstance(msg, Ping):
                     self.sendmsg(msg.pong())
                 await self._handler.on_message(self, msg)

@@ -14,9 +14,6 @@ class Ping(Message, metaclass=register_derivative):
         return parse.make_line(None, 'PONG', self.middle,
                                self.params, self.trailing)
 
-    def __repr__(self):
-        return '<Ping?> <Pong!>'
-
 
 class Numeric005(Message, metaclass=register_derivative):
 
