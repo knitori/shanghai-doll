@@ -12,7 +12,8 @@ class Join(Message, metaclass=register_derivative):
         self.channel = self._pkg.params[0]
 
     def __repr__(self):
-        return '* {} joined {}'.format(self.subject, self.channel)
+        return '\033[34;1m* {} joined {}\033[0m'\
+            .format(self.subject, self.channel)
 
 
 class Part(Message, metaclass=register_derivative):
@@ -24,8 +25,9 @@ class Part(Message, metaclass=register_derivative):
 
     def __repr__(self):
         if self.message is None:
-            return '* {} parted {}'.format(self.subject, self.channel)
-        return '* {} parted {} ({})'.format(
+            return '\033[35;1m* {} parted {}\033[0m'\
+                .format(self.subject, self.channel)
+        return '\033[35;1m* {} parted {} ({})\033[0m'.format(
             self.subject, self.channel, self.message)
 
 
@@ -39,10 +41,10 @@ class Kick(Message, metaclass=register_derivative):
 
     def __repr__(self):
         if self.reason is None:
-            return '* {s.kicked} was kicked by {s.kicker} from {s.channel}'\
-                .format(s=self)
-        return '* {s.kicked} was kicked by {s.kicker} from {s.channel}. ' \
-               'Reason: {s.reason}'.format(s=self)
+            return '\033[44;1m* {s.kicked} was kicked by {s.kicker} ' \
+                   'from {s.channel}\033[0m'.format(s=self)
+        return '\033[44;1m* {s.kicked} was kicked by {s.kicker} ' \
+               'from {s.channel}. Reason: {s.reason}\033[0m'.format(s=self)
 
 
 class Quit(Message, metaclass=register_derivative):
@@ -53,8 +55,8 @@ class Quit(Message, metaclass=register_derivative):
 
     def __repr__(self):
         if self.message is None:
-            return '* {} quitted'.format(self.subject)
-        return '* {} quitted ({})'.format(self.subject, self.message)
+            return '\033[30;1m* {} quitted\033[0m'.format(self.subject)
+        return '\033[30;1m* {} quitted ({})\033[0m'.format(self.subject, self.message)
 
 
 class Nick(Message, metaclass=register_derivative):
@@ -64,5 +66,5 @@ class Nick(Message, metaclass=register_derivative):
         self.newnick = self._pkg.params[0]
 
     def __repr__(self):
-        return '* {} changed its nickname to {}'.format(
+        return '\033[43;1m* {} changed its nickname to {}\033[0m'.format(
             self.subject, self.newnick)
