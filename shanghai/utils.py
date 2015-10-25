@@ -6,7 +6,7 @@ import regex
 patterns = dict(
     scheme=r'(?:https?://)',
     user=r'(?:[\w\-]+@)',
-    domain=r'[\pL\pN\pS][-\pL\pN\pS]*(?:\.[-\pL\pN\pS]+)*',
+    domain=r'[_\pL\pN\pS][-_\pL\pN\pS]*(?:\.[-_\pL\pN\pS]+)*',
     tld=r'\.[\pL][-\pL\pN]*[\pL]',
     port=r'(?:\:\d+)',
     lpar=r'\(',
