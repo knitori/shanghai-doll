@@ -1,9 +1,16 @@
 
 import asyncio
+import logging
 
 from shanghai.irc.messages import Message, Privmsg, CtcpRequest
 from shanghai.irc.protocol import IRCProtocol
 from shanghai.irc.parse import is_channel
+
+logging.basicConfig(
+    format="[%(asctime)s] [%(levelname)s] %(message)s",
+    level=logging.DEBUG,
+    datefmt="%d.%m.%Y %H:%M:%S")
+logger = logging.getLogger(__name__)
 
 
 class IRCHandler:
@@ -11,6 +18,9 @@ class IRCHandler:
     async def on_connected(self, prot):
         prot.sendline('NICK Shanghai|Doll')
         prot.sendline('USER doll * * :Shanghai Doll')
+
+    async def on_disconnect(self, prot):
+        print('Disconnected from {}'.format(prot))
 
     async def on_message(self, prot: IRCProtocol, msg: Message):
         print(msg)
@@ -37,10 +47,10 @@ class IRCHandler:
 loop = asyncio.get_event_loop()
 
 prot1 = IRCProtocol('irc.euirc.net', 6667, IRCHandler())
-prot2 = IRCProtocol('irc.freenode.net', 6667, IRCHandler())
+# prot2 = IRCProtocol('irc.freenode.net', 6667, IRCHandler())
 
 asyncio.ensure_future(prot1.run())
-asyncio.ensure_future(prot2.run())
+# asyncio.ensure_future(prot2.run())
 
 try:
     loop.run_forever()

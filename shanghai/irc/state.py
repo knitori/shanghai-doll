@@ -1,5 +1,7 @@
 
 from . import parse
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Channel:
@@ -54,6 +56,9 @@ class Join:
 
     def __hash__(self):
         return hash((self.channel, self.user))
+
+    def __repr__(self):
+        return 'Join({!r}, {!r})'.format(self.channel, self.user)
 
 
 class Network:

@@ -1,6 +1,8 @@
 
 from collections import namedtuple
 import re
+import logging
+logger = logging.getLogger(__name__)
 
 Line = namedtuple('Line', 'prefix command middle params trailing')
 Prefix = namedtuple('Prefix', 'nick ident hostname')

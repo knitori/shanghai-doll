@@ -2,6 +2,8 @@
 from .parse import pack_message
 from .messages import Message, Ping
 import asyncio
+import logging
+logger = logging.getLogger(__name__)
 
 
 class IRCProtocol:
@@ -30,6 +32,8 @@ class IRCProtocol:
                 if isinstance(msg, Ping):
                     self.sendmsg(msg.pong())
                 await self._handler.on_message(self, msg)
+
+        await self._handler.on_disconnect(self)
 
     def sendmsg(self, msg):
         self.sendline(pack_message(msg))

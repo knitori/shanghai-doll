@@ -1,5 +1,7 @@
 
 from .. import parse
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Message:
@@ -25,7 +27,11 @@ class Message:
     @classmethod
     def from_line(cls, line):
         msg = parse.unpack_line(line)
-        return cls._command_map.get(msg.command.upper(), cls)(msg)
+        if msg.command.isdigit():
+            command = 'Numeric{}'.format(msg.command)
+        else:
+            command = msg.command
+        return cls._command_map.get(command.upper(), cls)(msg)
 
     def __repr__(self):
         return parse.pack_message(self._pkg)

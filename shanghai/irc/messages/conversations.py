@@ -1,6 +1,8 @@
 
 from . import Message, register_derivative
 from .. import parse
+import logging
+logger = logging.getLogger(__name__)
 
 
 class BaseCtcp(Message):
