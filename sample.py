@@ -6,6 +6,7 @@ from shanghai.irc.messages import Message, Privmsg, CtcpRequest
 from shanghai.irc.protocol import IRCProtocol
 from shanghai.irc.parse import is_channel
 from shanghai.irc.state import Network
+from shanghai import utils
 
 logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] %(message)s",
@@ -53,6 +54,18 @@ class IRCHandler:
                     prot.sendline('PART {} :Cycling! Because I can!'
                                   .format(msg.target))
                     prot.sendline('JOIN {}'.format(msg.target))
+            elif msg.message.startswith('+'):
+                return
+
+            if is_channel(msg.target) and \
+                    ('http://' in msg.message or 'https://' in msg.message)\
+                    and not msg.message.startswith('+'):
+                def replace_url(match):
+                    the_url, = match.groups('url')
+                    return '\x0304\x02{}\x0F'.format(the_url)
+                text = utils.url_pattern.sub(replace_url, msg.message)
+                prot.sendline('PRIVMSG {} :Matched: {}'
+                              .format(msg.target, text))
         if isinstance(msg, CtcpRequest):
             if msg.ctcp_command == 'VERSION':
                 prot.sendline('NOTICE {} :\x01VERSION {}\x01'
