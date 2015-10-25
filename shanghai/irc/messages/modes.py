@@ -20,4 +20,9 @@ class Mode(Message, metaclass=register_derivative):
         self.args = self.params[2:]
 
     def __repr__(self):
-        return 'Mode'
+        if parse.is_channel(self.target):
+            return 'ChannelMode({s.target!r}, {s.modes}, args={s.args})'\
+                .format(s=self)
+        else:
+            return 'UserMode({s.target!r}, {s.modes}, args={s.args})'\
+                .format(s=self)
