@@ -34,12 +34,16 @@ class IRCHandler:
                               .format(msg.sender, 'Shanghai Doll 0.1dev'))
 
 
-prot = IRCProtocol('irc.euirc.net', 6667, IRCHandler())
-
 loop = asyncio.get_event_loop()
 
+prot1 = IRCProtocol('irc.euirc.net', 6667, IRCHandler())
+prot2 = IRCProtocol('irc.freenode.net', 6667, IRCHandler())
+
+asyncio.ensure_future(prot1.run())
+asyncio.ensure_future(prot2.run())
+
 try:
-    loop.run_until_complete(prot.run())
+    loop.run_forever()
 except KeyboardInterrupt:
     loop.close()
 print()
