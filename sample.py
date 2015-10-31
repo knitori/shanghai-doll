@@ -1,6 +1,10 @@
 
 import asyncio
 import logging
+import io
+import sys
+
+import urwid
 
 from shanghai.irc.messages import Message, Privmsg, CtcpRequest
 from shanghai.irc.protocol import IRCProtocol
@@ -8,10 +12,7 @@ from shanghai.irc.parse import is_channel
 from shanghai.irc.state import Network
 from shanghai import utils
 
-logging.basicConfig(
-    format="[%(asctime)s] [%(levelname)s] %(message)s",
-    level=logging.DEBUG,
-    datefmt="%d.%m.%Y %H:%M:%S")
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,14 +22,14 @@ class IRCHandler:
         self.network = Network('Shanghai|Doll')
 
     async def on_connected(self, prot):
-        print('\033[32;1mConnected to {}:{}\033[0m'
-              .format(prot.host, prot.port))
+        logger.info('Connected to {}:{}'
+                    .format(prot.host, prot.port))
         prot.sendline('NICK {}'.format(self.network.mynick))
         prot.sendline('USER doll * * :Shanghai Doll')
 
     async def on_disconnect(self, prot):
-        print('\033[31;1mDisconnected from {}:{}\033[0m'
-              .format(prot.host, prot.port))
+        logger.info('Disconnected from {}:{}'
+                    .format(prot.host, prot.port))
         loop = asyncio.get_event_loop()
         loop.call_later(30, self.reconnect, prot.host, prot.port)
 
@@ -37,6 +38,8 @@ class IRCHandler:
         asyncio.ensure_future(IRCProtocol(host, port, self).run())
 
     async def on_message(self, prot: IRCProtocol, msg: Message):
+        global main_window
+        main_window.print_received_message(str(msg))
         self.network.feed_message(msg)
 
         if msg.isnumeric('001'):
@@ -72,16 +75,33 @@ class IRCHandler:
                               .format(msg.sender, 'Shanghai Doll 0.1dev'))
 
 
-loop = asyncio.get_event_loop()
+logging.basicConfig(
+    format="[%(asctime)s] [%(levelname)s] %(message)s",
+    level=logging.DEBUG,
+    datefmt="%d.%m.%Y %H:%M:%S",
+    filename='logs/main.log',
+)
 
-prot1 = IRCProtocol('irc.euirc.net', 6667, IRCHandler())
+
+loop = asyncio.get_event_loop()
+handler = IRCHandler()
+
+prot1 = IRCProtocol('irc.euirc.net', 6667, handler)
 # prot2 = IRCProtocol('irc.freenode.net', 6667, IRCHandler())
 
 asyncio.ensure_future(prot1.run())
 # asyncio.ensure_future(prot2.run())
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    loop.close()
+# urwid
+# urwid
+# urwid
+# urwid
+
+from shanghai.urwid import MainWindow
+main_window = MainWindow(
+    event_loop=urwid.AsyncioEventLoop(loop=loop)
+)
+main_window.main()
+# uloop.run()
+
 print()

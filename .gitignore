@@ -5,3 +5,5 @@ config.toml
 playground/
 plugins/
 shanghai/plugin/
+logs/main.log
+

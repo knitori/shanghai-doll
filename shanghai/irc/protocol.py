@@ -29,7 +29,7 @@ class IRCProtocol:
             line = line.strip().decode('utf-8', 'replace')
             if line:
                 msg = Message.from_line(line)
-                print('\033[36;1m>>>\033[0;0m {}'.format(msg))
+                logger.debug('>>> {}'.format(msg))
                 if isinstance(msg, Ping):
                     self.sendmsg(msg.pong())
                 await self._handler.on_message(self, msg)
@@ -40,5 +40,5 @@ class IRCProtocol:
         self.sendline(pack_message(msg))
 
     def sendline(self, line):
-        print('\033[33;1m<<< {}\033[0;0m'.format(line))
+        logger.debug('<<< {}'.format(line))
         self.writer.write('{}\r\n'.format(line).encode('utf-8'))

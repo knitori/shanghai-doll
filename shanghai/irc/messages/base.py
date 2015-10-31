@@ -1,4 +1,7 @@
 
+from datetime import datetime
+import pytz
+
 from .. import parse
 import logging
 logger = logging.getLogger(__name__)
@@ -9,6 +12,8 @@ class Message:
 
     def __init__(self, pkg):
         self._pkg = pkg
+        # TODO: make timezone configurable
+        self.dt = datetime.now(tz=pytz.timezone('Europe/Berlin'))
         self.prefix = pkg.prefix
         self.command = pkg.command
         self.middle = pkg.middle
